@@ -1,0 +1,31 @@
+name: Deploy Astro Blog to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Activa este workflow cada vez que se haga push en la rama 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Ejecuta el workflow en una máquina Linux
+
+    steps:
+      - name: Checkout code  # Toma el código de tu repositorio
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js  # Configura Node.js en la máquina para ejecutar los comandos npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16  # Usa la versión de Node.js 16 (compatible con Astro)
+
+      - name: Install dependencies  # Instala las dependencias de tu proyecto
+        run: npm install
+
+      - name: Build project  # Construye tu proyecto para producción
+        run: npm run build
+
+      - name: Deploy to GitHub Pages  # Despliega los archivos a GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3  # Usa una acción de GitHub específica para publicar en GitHub Pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Utiliza el token de GitHub para autenticación automática
+          publish_dir: ./dist  # Especifica el directorio de salida de Astro (donde se generó el sitio estático)
